@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style>
+			/*图片容器整体样式，左右居中 视角景深800px */
+			#imgWrap{
+				width: 800px;
+				height: 400px;
+				margin: 80px auto;
+				perspective: 800px;
+			}
+
+			/*左对齐，高宽*数量=整体div*/
+			#imgWrap img{
+				float: left;
+				width: 80px;
+				height: 80px;
+			}
+
+			#btn{
+				width: 100px;
+				/*height: 40px 这里不定义就是跟font大小一样*/
+				background: rgb(0,100,0);
+				padding: 0 20px;
+				/*font-size 和 line-height 中可能的值。*/
+				font: 16px/40px "微软雅黑";
+				color: #fff;
+				margin: 0 auto;
+				border-radius: 5px;
+				box-shadow: 2px 2px 5px #000;
+				cursor: pointer;
+			}
+		</style>
+		<script>
+			/*
+			 * 讲师：陈学辉
+			 * QQ：356985332
+			 * 微信：kaivon
+			 *
+			 */
+
+			/*
+			 * 1、图片缩放（随机，并且不是同时运动）
+			 * 	1、从大到小
+			 * 	2、从小到大，透明度从1到0（在第一步运动完成后立马开始）
+			 *
+			 * 2、图片旋转（随机，并且不是同时运动的。需要在全部运动走完以后开始）
+			 */
+
+			window.onload=function(){
+				var btn=document.getElementById("btn");
+				// 选择所有元素
+				var imgs=document.querySelectorAll("img");
+				var endNum=0;		//它代表图片运动完成的数量
+				var canClick=true;	//它代表用户能否再次点击
+
+				btn.onclick=function(){
+					if(!canClick){
+						return;		//以下的代码不要走了
+					}
+					canClick=false;
+
+
+					for(var i=0;i<imgs.length;i++){
+						(function(i){
+							setTimeout(function(){
+								/*imgs[i].style.transition='100ms';
+								imgs[i].style.transform='scale(0)';
+								imgs[i].style.opacity='0';
+
+								imgs[i].addEventListener('transitionend',function(){
+									console.log(1);
+								});*/
+
+								motion(imgs[i],'50ms',function(){
+									this.style.transform='scale(0)';
+								},function(){
+									motion(this,'1s',function(){
+										this.style.transform='scale(1)';
+										this.style.opacity='0';
+									},function(){
+										//在这里表示图片缩放的运动已经全部完成了，接着走第二个运动
+
+										endNum++;
+										if(endNum==imgs.length){
+											//所有的运动都完成了
+											//console.log('所有的运动都完成了')
+											rotate();
+											//endNum=0;
+										}
+									});
+								});
+							},Math.random()*1000);
+						})(i);
+					}
+				};
+
+
+				//旋转功能
+				function rotate(){
+					for(var i=0;i<imgs.length;i++){
+						//给运动来一下初始化
+						imgs[i].style.transition='';
+						/*imgs[i].style.opacity=1;*/
+						imgs[i].style.transform='rotateY(0deg) translateZ(-'+Math.random()*500+'px)';
+
+						//运动来了，自执行函数
+						(function(i){
+							setTimeout(function(){
+								motion(imgs[i],'2s',function(){
+									this.style.opacity=1;
+									this.style.transform='rotateY(-360deg) translateZ(0)';
+								},function(){
+									endNum--;	//因为在上次运动结束的时候，endNum的值已经加到了50了
+									//console.log(endNum);
+									if(endNum==0){
+										//所有的运动都完成了
+										canClick=true;
+										//endNum=0
+									}
+								});
+							},Math.random()*1000);
+						})(i);
+					}
+				}
+
+				//运动函数
+				function motion(obj,timer,doFn,callBack){
+					//motion(运动对象,运动时间(字符串+单位),运动属性(函数),运动结束后的回调函数)
+					obj.style.transition=timer;
+					doFn.call(obj);//改变对象
+
+					var end=true;		//用来知道过渡有没有完成一次
+
+					//结束事件处理函数
+					function endFn(){
+						if(end){
+							//callBack&&callBack.call(obj);
+							if(callBack){
+								callBack.call(obj);
+							}
+
+							end=false;	//改成false，下次就不会走这个if了
+						}
+
+						obj.removeEventListener('transitionend',endFn);	//结束后就把这个事件取消掉，要不它会一直带在身上
+					}
+
+					obj.addEventListener('transitionend',endFn);
+				}
+			};
+		</script>
+	</head>
+	<body>
+		<div id="imgWrap">
+			<img src="images/1.jpg" alt="" />
+			<img src="images/2.jpg" alt="" />
+			<img src="images/3.jpg" alt="" />
+			<img src="images/4.jpg" alt="" />
+			<img src="images/5.jpg" alt="" />
+			<img src="images/6.jpg" alt="" />
+			<img src="images/7.jpg" alt="" />
+			<img src="images/8.jpg" alt="" />
+			<img src="images/9.jpg" alt="" />
+			<img src="images/10.jpg" alt="" />
+			<img src="images/11.jpg" alt="" />
+			<img src="images/12.jpg" alt="" />
+			<img src="images/13.jpg" alt="" />
+			<img src="images/14.jpg" alt="" />
+			<img src="images/15.jpg" alt="" />
+			<img src="images/16.jpg" alt="" />
+			<img src="images/17.jpg" alt="" />
+			<img src="images/18.jpg" alt="" />
+			<img src="images/19.jpg" alt="" />
+			<img src="images/20.jpg" alt="" />
+			<img src="images/21.jpg" alt="" />
+			<img src="images/22.jpg" alt="" />
+			<img src="images/23.jpg" alt="" />
+			<img src="images/24.jpg" alt="" />
+			<img src="images/25.jpg" alt="" />
+			<img src="images/26.jpg" alt="" />
+			<img src="images/27.jpg" alt="" />
+			<img src="images/28.jpg" alt="" />
+			<img src="images/29.jpg" alt="" />
+			<img src="images/30.jpg" alt="" />
+			<img src="images/31.jpg" alt="" />
+			<img src="images/32.jpg" alt="" />
+			<img src="images/33.jpg" alt="" />
+			<img src="images/34.jpg" alt="" />
+			<img src="images/35.jpg" alt="" />
+			<img src="images/36.jpg" alt="" />
+			<img src="images/37.jpg" alt="" />
+			<img src="images/38.jpg" alt="" />
+			<img src="images/39.jpg" alt="" />
+			<img src="images/40.jpg" alt="" />
+			<img src="images/41.jpg" alt="" />
+			<img src="images/42.jpg" alt="" />
+			<img src="images/43.jpg" alt="" />
+			<img src="images/44.jpg" alt="" />
+			<img src="images/45.jpg" alt="" />
+			<img src="images/46.jpg" alt="" />
+			<img src="images/47.jpg" alt="" />
+			<img src="images/48.jpg" alt="" />
+			<img src="images/49.jpg" alt="" />
+			<img src="images/50.jpg" alt="" />
+		</div>
+		<div id="btn">点击查看效果</div>
+	</body>
+</html>
